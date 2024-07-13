@@ -9,7 +9,7 @@
 #include "imgui_impl_opengl3.h"
 
 const uint32_t screen_width = 1200;
-const uint32_t screen_height = 1000;
+const uint32_t screen_height =1000;
 
 auto Application::CreateScreenQuad() -> void {
 
@@ -76,13 +76,13 @@ Application::Application(Texture& data, PhysicsEngine& physics) : m_grid(data),
 
   std::cout << "OpenGL version " << glGetString(GL_VERSION) << '\n';
 
-  IMGUI_CHECKVERSION();
-  ImGui::CreateContext();
-  m_imgui_io = ImGui::GetIO();
-  m_imgui_io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
-  
-  ImGui_ImplGlfw_InitForOpenGL(window, true);
-  ImGui_ImplOpenGL3_Init();
+  // IMGUI_CHECKVERSION();
+  // ImGui::CreateContext();
+  // m_imgui_io = ImGui::GetIO();
+  // m_imgui_io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+
+  // ImGui_ImplGlfw_InitForOpenGL(window, true);
+  // ImGui_ImplOpenGL3_Init();
 
   CreateScreenQuad();
   m_grid.InitialTexture();
@@ -97,9 +97,9 @@ auto Application::Run() -> void {
 
   while(!glfwWindowShouldClose(window)) {
 
-    ImGui_ImplOpenGL3_NewFrame();
-    ImGui_ImplGlfw_NewFrame();
-    ImGui::NewFrame();
+    // ImGui_ImplOpenGL3_NewFrame();
+    // ImGui_ImplGlfw_NewFrame();
+    // ImGui::NewFrame();
     // ImGui::ShowDemoWindow();
 
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -110,22 +110,22 @@ auto Application::Run() -> void {
     }
 
 
-    ImGui::Begin("Here's a window");
-    ImVec2 size = ImGui::GetWindowSize();
-    auto w = ImGui::GetContentRegionAvail().x;
-    auto h = ImGui::GetContentRegionAvail().y;
-    ImGui::Image((void*)(intptr_t)m_grid.ID(), ImVec2(w,h));
-    ImGui::End();
+    // ImGui::Begin("Here's a window");
+    // ImVec2 size = ImGui::GetWindowSize();
+    // auto w = ImGui::GetContentRegionAvail().x;
+    // auto h = ImGui::GetContentRegionAvail().y;
+    // ImGui::Image((void*)(intptr_t)m_grid.ID(), ImVec2(w,h));
+    // ImGui::End();
 
-    ImGui::Render();
-    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+    // ImGui::Render();
+    // ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
     // Bind framebuffer
 
-    // quad_shader.Use();
-    // glBindTexture(GL_TEXTURE_2D, TextureID());
-    // glBindVertexArray(m_quad);
-    // glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    quad_shader.Use();
+    glBindTexture(GL_TEXTURE_2D, TextureID());
+    glBindVertexArray(m_quad);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
     // unbind framebuffer
 
@@ -136,8 +136,8 @@ auto Application::Run() -> void {
 
 Application::~Application() {
   glfwTerminate();
-  ImGui_ImplOpenGL3_Shutdown();
-  ImGui::DestroyContext();
+  // ImGui_ImplOpenGL3_Shutdown();
+  // ImGui::DestroyContext();
 }
 
 auto Application::ApplyPhysics() -> void {

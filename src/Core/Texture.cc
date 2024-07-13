@@ -1,5 +1,7 @@
 #include "Texture.h"
+#include <cstdint>
 #include <iostream>
+#include <random>
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image/stb_image.h"
 
@@ -62,6 +64,42 @@ Texture::Texture(size_t n_rows, size_t n_columns) {
   m_rows = n_rows;
   m_columns = n_columns;
   m_data = RegularCheckerboard(m_rows, m_columns);
+}
+
+Texture::Texture(size_t n_rows, size_t n_columns, GridType grid) {
+  m_rows = n_rows;
+  m_columns = n_columns;
+  m_data = MakeCheckerboard(m_rows, m_columns, grid);
+}
+
+auto Texture::MakeCheckerboard(size_t rows, size_t columns, GridType grid) -> std::vector<uint8_t> {
+  if (grid == GridType::Regular) {
+    return RegularCheckerboard(rows, columns); 
+  } else if (grid == GridType::Random) {
+    return RandomCheckerboard(rows, columns);
+  } else {
+    return std::vector<uint8_t> {};
+  }
+}
+
+auto Texture::RandomCheckerboard(size_t rows, size_t columns) -> std::vector<uint8_t> {
+
+  std::mt19937 generator{std::random_device{}()};
+  std::uniform_real_distribution<float> up_or_down(0.0, 1.0);
+
+  std::vector<uint8_t> data;
+  data.resize(rows*columns);
+  for(size_t j = 0; j < columns; ++j) {
+    for(size_t i = 0; i < rows; ++i) {
+      if (up_or_down(generator) < 0.5) {
+        data[i + j * rows] = 0xFF;
+      } else {
+        data[i + j * rows] = 0x00;
+      }
+    }
+  }
+
+  return data;
 }
 
 Texture::Texture() {
