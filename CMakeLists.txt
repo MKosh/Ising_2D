@@ -1,46 +1,56 @@
-cmake_minimum_required(VERSION 3.22)
+cmake_minimum_required(VERSION 3.24)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS on)
 
-if(UNIX) 
-  set(CMAKE_TOOLCHAIN_FILE /home/markm/packages/vcpkg/scripts/buildsystems/vcpkg.cmake)
-  set(CMAKE_CXX_COMPILER /usr/bin/clang++)
-elseif(WIN32)
-  set(CMAKE_TOOLCHAIN_FILE c:/packages/vcpkg/scripts/buildsystems/vcpkg.cmake)
-endif()
-
 set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_COMPILER clang++)
+set(CMAKE_C_COMPILER clang)
+
+include(FetchContent)
 
 project(ising LANGUAGES C CXX)
 
 find_package(glfw3 REQUIRED)
-find_package(imgui REQUIRED)
+find_package(OpenGL REQUIRED)
+find_package(imgui QUIET)
 
-add_executable(ising ising.cc)
+if (NOT TARGET imgui::imgui)
+  message(STATUS "--- IMGUI not found on system. Fetching content")
+  FetchContent_Declare(
+    imgui
+    GIT_REPOSITORY https://github.com/ocornut/imgui.git
+    GIT_TAG v1.91.0-docking
+  )
+  FetchContent_MakeAvailable(imgui)
+  set(IMGUI_SRC "${CMAKE_BINARY_DIR}/_deps/imgui-src")
+endif()
 
+if (NOT TARGET implot::implot)
+  message(STATUS "--- IMPLOT not found on system. Fetching content")
+  FetchContent_Declare(
+    implot
+    GIT_REPOSITORY https://github.com/epezent/implot
+    GIT_TAG f156599faefe316f7dd20fe6c783bf87c8bb6fd9
+  )
+  FetchContent_MakeAvailable(implot)
+  set(IMPLOT_SRC "${CMAKE_BINARY_DIR}/_deps/implot-src")
+endif()
+
+# add_executable(ising ising.cc)
 add_subdirectory(src)
 add_subdirectory(external)
 
-if(UNIX)
-  target_include_directories(ising
-    PRIVATE
-      ${CMAKE_SOURCE_DIR}/src
-      ${CMAKE_SOURCE_DIR}/external/glad/include
-      ${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/include
-  )
-elseif(WIN32)
-  target_include_directories(ising
-    PRIVATE
-      ${CMAKE_SOURCE_DIR}/src
-      ${CMAKE_SOURCE_DIR}/external/glad/include
-      ${CMAKE_SOURCE_DIR}/build/win/vcpkg_installed/x64-windows/include
-  )
-  target_link_directories(ising
-    PRIVATE
-      ${CMAKE_SOURCE_DIR}/build/win/vcpkg_installed/x64-windows/lib)
-endif()
+# target_include_directories(ising PRIVATE
+#   src
+#   ${CMAKE_SOURCE_DIR}/external/glad/include
+# )
 
-target_link_libraries(ising
-  PRIVATE
-    Core
-)
+# target_link_libraries(ising PUBLIC
+#   Core
+#   glfw
+#   glad
+#   imgui
+#   implot
+#   OpenGL::OpenGL
+# )
+

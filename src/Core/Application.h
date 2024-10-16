@@ -1,9 +1,11 @@
 #pragma once
 
-#include "Texture.h"
-#include "Physics.h"
+#define GLFW_INCLUDE_NONE
+// #define GLAD_GL_IMPLEMENTATION
 #include "glad/gl.h"
 #include "GLFW/glfw3.h"
+#include "Texture.h"
+#include "Physics.h"
 #include <cstdint>
 #include "imgui.h"
 #include <vector>
