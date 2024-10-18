@@ -84,6 +84,9 @@ int main (int argc, char *argv[]) {
     // ImGui::Image((void*)(intptr_t)m_grid.ID(), ImVec2(w,h));
     ImGui::End();
 
+    ImGui::Begin("Another window");
+    ImGui::End();
+
     glClearColor(0.3f, 0.5f, 0.8f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
